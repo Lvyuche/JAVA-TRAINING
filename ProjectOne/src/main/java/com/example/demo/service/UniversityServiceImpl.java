@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UniversityServiceImpl implements UniversityService{
 
    @Override
    @Async
-   public ResponseEntity<List<University>> getUniversitiesByCountry(String country) {
+   public CompletableFuture<ResponseEntity<List<University>>> getUniversitiesByCountry(String country) {
       RestTemplate restTemplate = new RestTemplate();
       String url = "http://universities.hipolabs.com/search?country=" + country;
       ResponseEntity<List<University>> response = restTemplate.exchange(
@@ -24,11 +25,12 @@ public class UniversityServiceImpl implements UniversityService{
             null,
             new ParameterizedTypeReference<List<University>>() {}
       );
-      return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
+      return CompletableFuture.completedFuture(new ResponseEntity<>(response.getBody(), HttpStatus.OK));
    }
 
    @Override
-   public ResponseEntity<List<University>> getAllUniversities() {
+   @Async
+   public CompletableFuture<ResponseEntity<List<University>>> getAllUniversities() {
       RestTemplate restTemplate = new RestTemplate();
       String url = "http://universities.hipolabs.com/search";
       ResponseEntity<List<University>> response = restTemplate.exchange(
@@ -37,6 +39,6 @@ public class UniversityServiceImpl implements UniversityService{
             null,
             new ParameterizedTypeReference<List<University>>() {}
       );
-      return new ResponseEntity<>(response.getBody(), HttpStatus.OK);
+      return CompletableFuture.completedFuture(new ResponseEntity<>(response.getBody(), HttpStatus.OK));
    }
 }
