@@ -1,0 +1,12 @@
+Eager Initialization:  The instance is created when the class is loaded, 
+which avoids the need for synchronization but may result in the instance being created even if it's never used
+public class Singleton {
+    
+    private static final Singleton instance = new Singleton();
+    
+    private Singleton() {}
+    
+    public static Singleton getInstance() {
+        return instance;
+    }
+}
