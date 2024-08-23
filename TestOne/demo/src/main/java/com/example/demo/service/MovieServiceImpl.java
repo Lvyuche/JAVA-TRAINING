@@ -13,7 +13,9 @@ import java.util.Objects;
 @Service
 public class MovieServiceImpl implements MovieService {
 
-   private RestTemplate restTemplate;
+   private final RestTemplate restTemplate;
+
+   private final String url = "https://jsonmock.hackerrank.com/api/movies?page=";
 
    public MovieServiceImpl() {
       this.restTemplate = new RestTemplate();
@@ -21,7 +23,6 @@ public class MovieServiceImpl implements MovieService {
 
    @Override
    public ResponseDTO getMoviesByYear(String year) {
-      String url = "https://jsonmock.hackerrank.com/api/movies?page=";
       ResponseEntity<Response> response = restTemplate.getForEntity(url + "1", Response.class);
       Integer totalPage = response.getBody().getTotalPages();
       long count = 0L;
@@ -29,10 +30,7 @@ public class MovieServiceImpl implements MovieService {
          ResponseEntity<Response> tempResponse = restTemplate.getForEntity(url + i, Response.class);
          List<MovieData> tempData = tempResponse.getBody().getData();
          count += tempData.stream()
-               .filter(movie -> {
-                  System.out.println("Movie Year: " + movie.getYear() + ", Filter Year: " + Integer.valueOf(year));
-                  return Objects.equals(movie.getYear(), Integer.valueOf(year));
-               })
+               .filter(movie -> Objects.equals(movie.getYear(), Integer.valueOf(year)))
                .count();
       }
       ResponseDTO responseDTO = new ResponseDTO();
